@@ -1,0 +1,57 @@
+
+import cv2
+import os
+import time
+
+# Get the folder containing this program
+folder = os.path.dirname(os.path.abspath(__file__))
+video_path = os.path.join(folder, "input.mp4")
+
+# Read the video
+cap = cv2.VideoCapture(video_path)
+
+if not cap.isOpened():
+    print("Error: Video not found!")
+else:
+    fps = cap.get(cv2.CAP_PROP_FPS)
+
+    if fps <= 0:
+        fps = 30
+
+    print("Press S for slow motion")
+    print("Press F for fast motion")
+    print("Press Q to quit")
+
+    mode = "normal"
+
+    while True:
+        ret, frame = cap.read()
+
+        if not ret:
+            # Restart video when it reaches the end
+            cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            continue
+
+        cv2.imshow("Video Motion", frame)
+
+        key = cv2.waitKey(
+            max(1, int(1000 / fps * (
+                2 if mode == "slow" else
+                0.5 if mode == "fast" else 1
+            )))
+        ) & 0xFF
+
+        if key == ord('s'):
+            mode = "slow"
+            print("Slow motion enabled")
+        elif key == ord('f'):
+            mode = "fast"
+            print("Fast motion enabled")
+        elif key == ord('n'):
+            mode = "normal"
+            print("Normal speed enabled")
+        elif key == ord('q'):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
