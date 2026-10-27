@@ -1,0 +1,35 @@
+
+import cv2
+import os
+import numpy as np
+
+# Get the folder containing this program
+folder = os.path.dirname(os.path.abspath(__file__))
+
+# Read the input image
+image_path = os.path.join(folder, "input.jpg")
+image = cv2.imread(image_path)
+
+if image is None:
+    print("Error: Image not found!")
+    print("Check whether input.jpg is in the Computer Vision folder.")
+else:
+    # Create a kernel
+    kernel = np.ones((5, 5), np.uint8)
+
+    # Apply erosion
+    eroded = cv2.erode(image, kernel, iterations=1)
+
+    # Display original and eroded images
+    cv2.imshow("Original Image", image)
+    cv2.imshow("Eroded Image", eroded)
+
+    # Save the eroded image
+    output_path = os.path.join(folder, "eroded_image.jpg")
+    cv2.imwrite(output_path, eroded)
+
+    print("Image erosion completed successfully!")
+    print("Eroded image saved as eroded_image.jpg")
+
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
